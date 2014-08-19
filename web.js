@@ -7,7 +7,7 @@ app.use(logfmt.requestLogger());
 
 // Serve index.html
 app.get('/', function(req, res){
-  res.sendFile('index.html');
+  res.sendFile('index.html', {root: __dirname});
 });
 
 io.on('connection', function(socket){
