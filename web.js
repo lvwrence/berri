@@ -1,25 +1,33 @@
-var express = require('express');
-var logfmt = require('logfmt');
+// DEPENDENCIES
+// base dependencies
+var logfmt = require("logfmt");
+var express = require("express");
+var io = require("socket.io");
+// start up express server
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = app.listen(3000);
+// connect socket to server
+var io = io.listen(server);
+// list of animals for usernames
+var animals = require("./animals");
 
-// app settings
+// CONFIGURATION
+// logging
 app.use(logfmt.requestLogger());
-app.enable('trust proxy');
+// for viewing ips
+app.enable("trust proxy");
+// serve static assets
+app.use(express.static(__dirname + "/public"));
 
-// serve index.html
-app.get('/', function(req, res){
-  console.log('a user visited the site with ip ' + req.ip);
-  res.sendFile('index.html', {root: __dirname});
-});
+// a user connected
+io.on("connection", function(socket) {
+  console.log("a user connected with ip " + socket.handshake.address.address);
+  // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
+  socket.emit("init", {username: animals.get_animal_name(), ip: socket.handshake.address.address});
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-});
-
-// start the server
-var port = Number(process.env.PORT || 5000);
-app.listen(port, function() {
-  console.log('Listening on ' + port);
+  // on receiving a message from the user
+  socket.on("message", function(msg) {
+    console.log(msg.author + " said " + msg.text);
+    io.emit("message", msg);
+  });
 });
