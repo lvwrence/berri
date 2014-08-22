@@ -34,10 +34,20 @@ function getRoom(ipAddress, callback) {
   });
 }
 
+// pushes json-encoded message object to room
 function addMessage(room, message) {
   var key = "history:" + room;
   client.rpush(key, JSON.stringify(message));
 }
 
+// gets message history of room
+function getMessages(room, callback) {
+  var key = "history:" + room;
+  client.lrange(key, 0, -1, function(err, messages) {
+    callback(messages);
+  });
+}
+
 exports.getRoom = getRoom;
 exports.addMessage = addMessage;
+exports.getMessages = getMessages;

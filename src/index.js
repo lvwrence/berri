@@ -3,7 +3,7 @@
 // main component
 var Berri = React.createClass({
   getInitialState: function() {
-    return {user: null, messages: []};
+    return {user: null, ip: null, messages: []};
   },
   componentDidMount: function() {
     // initialization
@@ -12,7 +12,12 @@ var Berri = React.createClass({
     socket.on("message", this.getMessage);
   },
   initialize: function(data) {
-    this.setState({user: data});
+    console.log(data);
+    this.setState({
+      user: data.username,
+      ip: data.ip,
+      messages: data.messages
+    });
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
@@ -52,7 +57,7 @@ var MessageInput = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    var message = { author: this.props.user.username, text: this.state.text };
+    var message = { author: this.props.user, text: this.state.text };
     socket.emit("message", message);
     this.setState({text: ""});
   },

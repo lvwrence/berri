@@ -46,8 +46,17 @@ io.on("connection", function(socket) {
   socket.join(room);
 
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
-  console.log("initializing user with username...");
-  socket.emit("initialize", {username: animals.getAnimalName(), ip: socket.handshake.address.address});
+  console.log("initializing user...");
+  rooms.getMessages(room, function(messages) {
+    var username = animals.getAnimalName();
+    var ip = socket.handshake.address.address;
+    var messageHistory = messages.map(JSON.parse);
+    socket.emit("initialize", {
+      username: username,
+      ip: ip,
+      messages: messageHistory
+    });
+  });
 
   // on receiving a message from the user
   socket.on("message", function(msg) {
