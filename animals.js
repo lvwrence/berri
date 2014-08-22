@@ -7,8 +7,8 @@ var animals = [
   "Ant",
   "Anteater"];
 
-function rand_animal() {
+function randAnimal() {
   return animals[Math.floor(Math.random() * animals.length)];
 }
 
-exports.get_animal_name = rand_animal;
+exports.getAnimalName = randAnimal;

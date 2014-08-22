@@ -26,7 +26,7 @@ app.use('/static', express.static(__dirname + "/public"));
 app.get("/", function(req, res) {
   var ip = req.ip;
   console.log("a user visited root with ip " + ip);
-  rooms.get_room(ip, function(room) {
+  rooms.getRoom(ip, function(room) {
     console.log("sent to room " + room);
     res.redirect(room);
   });
@@ -47,12 +47,12 @@ io.on("connection", function(socket) {
 
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
   console.log("initializing user with username...");
-  socket.emit("initialize", {username: animals.get_animal_name(), ip: socket.handshake.address.address});
+  socket.emit("initialize", {username: animals.getAnimalName(), ip: socket.handshake.address.address});
 
   // on receiving a message from the user
   socket.on("message", function(msg) {
     io.to(room).emit("message", msg);
     console.log(msg.author + " said " + msg.text + " in room " + room);
-    rooms.add_message(room, msg);
+    rooms.addMessage(room, msg);
   });
 });

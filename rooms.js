@@ -14,10 +14,10 @@ client.on("error", function(err) {
 // name.
 // SCHEMA: ip keys are like ip:192.168.1.1
 //         room names are like room:room_name
-function get_room(ip_addr, callback) {
+function getRoom(ipAddress, callback) {
   // does the key exist? if not then make new room
   // otherwise get the existing room
-  var key = "ip:" + ip_addr;
+  var key = "ip:" + ipAddress;
   client.get(key, function(err, reply) {
     if (reply) {
       // return the room name
@@ -25,19 +25,19 @@ function get_room(ip_addr, callback) {
     } else {
       // get a random room from available rooms, pop it and add to
       // rooms:taken and register the ip to that room
-      client.spop("rooms:available", function(err, new_room) {
-        callback(new_room);
-        client.sadd("rooms:taken", new_room);
-        client.set(key, new_room);
+      client.spop("rooms:available", function(err, newRoom) {
+        callback(newRoom);
+        client.sadd("rooms:taken", newRoom);
+        client.set(key, newRoom);
       });
     }
   });
 }
 
-function add_message(room, message) {
+function addMessage(room, message) {
   var key = "history:" + room;
   client.rpush(key, JSON.stringify(message));
 }
 
-exports.get_room = get_room;
-exports.add_message = add_message;
+exports.getRoom = getRoom;
+exports.addMessage = addMessage;
