@@ -51,7 +51,8 @@ io.on("connection", function(socket) {
 
   // on receiving a message from the user
   socket.on("message", function(msg) {
-    console.log(msg.author + " said " + msg.text + " in room " + room);
     io.to(room).emit("message", msg);
+    console.log(msg.author + " said " + msg.text + " in room " + room);
+    rooms.add_message(room, msg);
   });
 });
