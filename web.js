@@ -5,7 +5,7 @@ var express = require("express");
 var io = require("socket.io");
 // start up express server
 var app = express();
-var server = app.listen(3000);
+var server = app.listen(8080);
 // connect socket to server
 var io = io.listen(server);
 // list of animals for usernames
