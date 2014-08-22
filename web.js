@@ -10,15 +10,35 @@ var server = app.listen(8080);
 var io = io.listen(server);
 // list of animals for usernames
 var animals = require("./animals");
+// room lib that uses redis
+var rooms = require("./rooms");
 
 // CONFIGURATION
 // logging
 app.use(logfmt.requestLogger());
 // for viewing ips
 app.enable("trust proxy");
-// serve static assets
-app.use(express.static(__dirname + "/public"));
 
+// SERVER
+// serve static assets
+app.use('/static', express.static(__dirname + "/public"));
+// a user visited root
+app.get("/", function(req, res) {
+  var ip = req.ip;
+  console.log("a user visited root with ip " + ip);
+  rooms.get_room(ip, function(room) {
+    console.log("sent to room " + room);
+    res.redirect(room);
+  });
+});
+// a user visited something other than root
+// (probably a room)
+app.get("*", function(req, res) {
+  res.sendFile('public/index.html', {"root": __dirname});
+});
+
+
+// SOCKET
 // a user connected
 io.on("connection", function(socket) {
   console.log("a user connected with ip " + socket.handshake.address.address);
