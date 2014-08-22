@@ -3,5 +3,5 @@
 *.DS_Store
 *.swp
 *.out
-.module_cache/
+.module-cache/
 berri.pem
