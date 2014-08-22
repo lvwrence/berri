@@ -47,7 +47,7 @@ io.on("connection", function(socket) {
 
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
   console.log("initializing user with username...");
-  socket.emit("init", {username: animals.get_animal_name(), ip: socket.handshake.address.address});
+  socket.emit("initialize", {username: animals.get_animal_name(), ip: socket.handshake.address.address});
 
   // on receiving a message from the user
   socket.on("message", function(msg) {

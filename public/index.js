@@ -7,9 +7,9 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   componentDidMount: function() {
     // initialization
-    socket.on('init', this.initialize);
+    socket.on("initialize", this.initialize);
     // on receiving a message from the server
-    socket.on('message', this.getMessage);
+    socket.on("message", this.getMessage);
   },
   initialize: function(data) {
     this.setState({user: data});
@@ -45,7 +45,7 @@ var Message = React.createClass({displayName: 'Message',
 
 var MessageInput = React.createClass({displayName: 'MessageInput',
   getInitialState: function() {
-    return {text: ''};
+    return {text: ""};
   },
   messageUpdated: function(e) {
     this.setState({text: e.target.value});
@@ -53,8 +53,8 @@ var MessageInput = React.createClass({displayName: 'MessageInput',
   handleSubmit: function(e) {
     e.preventDefault();
     var message = { author: this.props.user.username, text: this.state.text };
-    socket.emit('message', message);
-    this.setState({text: ''});
+    socket.emit("message", message);
+    this.setState({text: ""});
   },
   render: function() {
     return (
