@@ -1,3 +1,4 @@
+// this module just returns a random username
 var animals = [
   "Aardvark",
   "Albatross",
