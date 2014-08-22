@@ -37,17 +37,21 @@ app.get("*", function(req, res) {
   res.sendFile('public/index.html', {"root": __dirname});
 });
 
-
 // SOCKET
 // a user connected
 io.on("connection", function(socket) {
-  console.log("a user connected with ip " + socket.handshake.address.address);
+  // this is the room name (pathname)
+  var room = socket.handshake.headers.referer.split("/").slice(-1)[0];
+  console.log("a user with ip " + socket.handshake.address.address + " connected to room " + room);
+  socket.join(room);
+
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
+  console.log("initializing user with username...");
   socket.emit("init", {username: animals.get_animal_name(), ip: socket.handshake.address.address});
 
   // on receiving a message from the user
   socket.on("message", function(msg) {
-    console.log(msg.author + " said " + msg.text);
-    io.emit("message", msg);
+    console.log(msg.author + " said " + msg.text + " in room " + room);
+    io.to(room).emit("message", msg);
   });
 });
