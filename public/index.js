@@ -77,17 +77,20 @@ var MessageInput = React.createClass({displayName: 'MessageInput',
   messageUpdated: function(e) {
     this.setState({text: e.target.value});
   },
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var message = { author: this.props.user, text: this.state.text };
-    socket.emit("message", message);
-    this.setState({text: ""});
+  handleEnter: function(e) {
+    if (e.charCode == 13 && !e.shiftKey) {
+      e.preventDefault();
+      var message = { author: this.props.user, text: this.state.text };
+      socket.emit("message", message);
+      this.setState({text: ""});
+    }
   },
   render: function() {
     return (
-      React.DOM.form({onSubmit: this.handleSubmit}, 
-        React.DOM.input({onChange: this.messageUpdated, value: this.state.text})
-      )
+        React.DOM.textarea({placeholder: "Write message...", value: this.state.text, 
+                  onChange: this.messageUpdated, onKeyPress: this.handleEnter, 
+                  className: "animated"}
+        )
     );
   }
 });
