@@ -62,6 +62,10 @@ io.on("connection", function(socket) {
       ip: ip,
       messages: messageHistory
     });
+    // add user to room in redis (have to do it here
+    // since we manually put username in client so
+    // it won't appear twice)
+    rooms.addUser(room, username);
   });
 
   // on receiving a message from the user
@@ -74,5 +78,6 @@ io.on("connection", function(socket) {
   // on user disconnect
   socket.on("disconnect", function() {
     io.to(room).emit("quit", username);
+    rooms.removeUser(room, username);
   });
 });

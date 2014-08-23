@@ -16,10 +16,9 @@ var Berri = React.createClass({
     socket.on("quit", this.userQuit);
   },
   initialize: function(data) {
-    console.log(data);
     this.setState({
       user: data.username,
-      users: data.users,
+      users: data.users.concat([data.username]),
       ip: data.ip,
       messages: data.messages
     });
