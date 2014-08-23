@@ -42,17 +42,23 @@ app.get("*", function(req, res) {
 io.on("connection", function(socket) {
   // this is the room name (pathname)
   var room = socket.handshake.headers.referer.split("/").slice(-1)[0];
+  // get a random animal username
+  var username = animals.getAnimalName();
   console.log("a user with ip " + socket.handshake.address.address + " connected to room " + room);
   socket.join(room);
+  // emit a join
+  io.to(room).emit("join", username);
 
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
   console.log("initializing user...");
-  rooms.getMessages(room, function(messages) {
-    var username = animals.getAnimalName();
+  rooms.getData(room, function(users, messages) {
+    var user = username;
+    var users = users;
     var ip = socket.handshake.address.address;
     var messageHistory = messages.map(JSON.parse);
     socket.emit("initialize", {
       username: username,
+      users: users,
       ip: ip,
       messages: messageHistory
     });
@@ -63,5 +69,10 @@ io.on("connection", function(socket) {
     io.to(room).emit("message", msg);
     console.log(msg.author + " said " + msg.text + " in room " + room);
     rooms.addMessage(room, msg);
+  });
+
+  // on user disconnect
+  socket.on("disconnect", function() {
+    io.to(room).emit("quit", username);
   });
 });

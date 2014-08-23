@@ -3,18 +3,23 @@
 // main component
 var Berri = React.createClass({
   getInitialState: function() {
-    return {user: null, ip: null, messages: []};
+    return {user: null, users: [], ip: null, messages: []};
   },
   componentDidMount: function() {
     // initialization
     socket.on("initialize", this.initialize);
     // on receiving a message from the server
     socket.on("message", this.getMessage);
+    // on another user joining
+    socket.on("join", this.userJoined);
+    // on another user quitting
+    socket.on("quit", this.userQuit);
   },
   initialize: function(data) {
     console.log(data);
     this.setState({
       user: data.username,
+      users: data.users,
       ip: data.ip,
       messages: data.messages
     });
@@ -22,13 +27,31 @@ var Berri = React.createClass({
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
   },
+  userJoined: function(user) {
+    this.setState({users: this.state.users.concat([user])});
+  },
+  userQuit: function(user) {
+    var newUsers = this.state.users.slice();
+    newUsers.splice(newUsers.indexOf(user));
+    this.setState({users:newUsers});
+  },
   render: function() {
     return (
       <div>
+        <UserList users={this.state.users} />
         <Conversation messages={this.state.messages} />
         <MessageInput user={this.state.user} />
       </div>
     );
+  }
+});
+
+var UserList = React.createClass({
+  render: function() {
+    var renderUser = function(user) {
+      return <li>{user}</li>
+    }
+    return <ul>{this.props.users.map(renderUser)}</ul>;
   }
 });
 

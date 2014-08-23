@@ -40,14 +40,31 @@ function addMessage(room, message) {
   client.rpush(key, JSON.stringify(message));
 }
 
-// gets message history of room
-function getMessages(room, callback) {
-  var key = "history:" + room;
-  client.lrange(key, 0, -1, function(err, messages) {
-    callback(messages);
+// pushes user to room
+function addUser(room, user) {
+  var key = "users:" + room;
+  client.rpush(key, user);
+}
+
+// removes user from room
+function removeUser(room, user) {
+  var key = "users:" + room;
+  client.lrem(key, 0, user);
+}
+
+// gets current users, message history of room
+function getData(room, callback) {
+  var messagesKey = "history:" + room;
+  var usersKey = "users:" + room;
+  client.lrange(messagesKey, 0, -1, function(err, messages) {
+    client.lrange(usersKey, 0, -1, function(err, users) {
+      callback(users, messages);
+    });
   });
 }
 
 exports.getRoom = getRoom;
 exports.addMessage = addMessage;
-exports.getMessages = getMessages;
+exports.addUser = addUser;
+exports.removeUser = removeUser;
+exports.getData = getData;
