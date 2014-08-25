@@ -35,7 +35,7 @@ app.get("/", function(req, res) {
         res.redirect(room);
       });
     } else {
-      res.sendFile("public/index.html", {"root": __dirname});
+      res.sendFile("public/html/index.html", {"root": __dirname});
     }
   });
 });
@@ -59,14 +59,14 @@ app.get("*", function(req, res) {
     if (privacy == "private") {
       rooms.getRoom(ip, function(room) {
         if (room == path) {
-          res.sendFile("public/chat.html", {"root": __dirname});
+          res.sendFile("public/html/chat.html", {"root": __dirname});
         } else {
           res.send("Sorry, but you're not allowed.");
         }
       });
     // if it's public, doesn't matter
     } else if (privacy == "public") {
-      res.sendFile("public/chat.html", {"root": __dirname});
+      res.sendFile("public/html/chat.html", {"root": __dirname});
     } else {
       // room is not defined yet
       res.send("This room has not been created yet.");
