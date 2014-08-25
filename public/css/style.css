@@ -1,3 +1,32 @@
+#landing {
+  margin-left: auto;
+  margin-right: auto;
+  width: 20em; }
+  #landing h3, #landing h5, #landing h6, #landing p {
+    text-align: center; }
+  #landing .section {
+    width: 9em; }
+    #landing .section p {
+      text-align: left;
+      line-height: 1.2em;
+      font-size: 0.6em; }
+    #landing .section a {
+      margin-left: 2.3em; }
+  #landing #private {
+    float: left; }
+    #landing #private img {
+      margin-top: -0.2em;
+      width: 1em; }
+  #landing #public {
+    float: right; }
+    #landing #public img {
+      margin-top: -0.1em;
+      width: 1em; }
+  #landing #nb {
+    margin-top: 1.2em;
+    font-size: 0.5em;
+    line-height: 1.2em; }
+
 * {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */

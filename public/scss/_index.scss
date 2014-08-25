@@ -1,0 +1,42 @@
+#landing {
+  margin-left: auto;
+  margin-right: auto;
+  width: 20em;
+  h3, h5, h6, p {
+    text-align: center;
+  }
+
+  .section {
+    width: 9em;
+    p {
+      text-align: left;
+      line-height: 1.2em;
+      font-size: 0.6em ;
+    }
+    a {
+      margin-left: 2.3em;
+    }
+  }
+
+  #private {
+    float: left;
+    img {
+      margin-top: -0.2em;
+      width: 1em;
+    }
+  }
+
+  #public {
+    float:right;
+    img {
+      margin-top: -0.1em;
+      width: 1em;
+    }
+  }
+
+  #nb {
+    margin-top: 1.2em;
+    font-size: 0.5em;
+    line-height: 1.2em;
+  }
+}
