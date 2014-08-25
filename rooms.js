@@ -9,28 +9,48 @@ client.on("error", function(err) {
   console.log("redis error: " + err);
 });
 
-// a user with ip `ip_addr` connected. create new room and return
-// the room name, or, if room exists already return the existing
-// name.
 // SCHEMA: ip keys are like ip:192.168.1.1
 //         room names are like room:room_name
+
+// check if room with ip ipAddress exists
+// returns bool
+function doesRoomExist(ipAddress, callback) {
+  var key = "ip:" + ipAddress;
+  client.exists(key, function(err, reply) {
+    if (reply) {
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
+}
+
+// gets the room for ip ipAddress
 function getRoom(ipAddress, callback) {
+  var key = "ip:" + ipAddress;
+  client.get(key, function(err, reply) {
+    callback(reply);
+  });
+}
+
+function createRoom(ipAddress, privacy, callback) {
   // does the key exist? if not then make new room
   // otherwise get the existing room
   var key = "ip:" + ipAddress;
+  // get a random room from available rooms, pop it and add to
+  // rooms:taken and register the ip to that room
+  client.spop("rooms:available", function(err, newRoom) {
+    client.sadd("rooms:taken", newRoom);
+    client.set("privacy:" + newRoom, privacy);
+    client.set(key, newRoom);
+    callback(newRoom); });
+}
+
+// checks whether room is private
+function roomPrivacy(room, callback) {
+  var key = "privacy:" + room;
   client.get(key, function(err, reply) {
-    if (reply) {
-      // return the room name
-      callback(reply);
-    } else {
-      // get a random room from available rooms, pop it and add to
-      // rooms:taken and register the ip to that room
-      client.spop("rooms:available", function(err, newRoom) {
-        callback(newRoom);
-        client.sadd("rooms:taken", newRoom);
-        client.set(key, newRoom);
-      });
-    }
+    callback(reply);
   });
 }
 
@@ -63,7 +83,10 @@ function getData(room, callback) {
   });
 }
 
+exports.doesRoomExist = doesRoomExist;
 exports.getRoom = getRoom;
+exports.createRoom = createRoom;
+exports.roomPrivacy = roomPrivacy;
 exports.addMessage = addMessage;
 exports.addUser = addUser;
 exports.removeUser = removeUser;

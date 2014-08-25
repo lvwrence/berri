@@ -2,6 +2,7 @@
 // base dependencies
 var logfmt = require("logfmt");
 var express = require("express");
+var bodyParser = require('body-parser');
 var io = require("socket.io");
 // start up express server
 var app = express();
@@ -18,23 +19,59 @@ var rooms = require("./rooms");
 app.use(logfmt.requestLogger());
 // for viewing ips
 app.enable("trust proxy");
+// for parsing body for post params
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // SERVER
 // serve static assets
-app.use('/static', express.static(__dirname + "/public"));
+app.use("/static", express.static(__dirname + "/public"));
 // a user visited root
 app.get("/", function(req, res) {
   var ip = req.ip;
   console.log("a user visited root with ip " + ip);
-  rooms.getRoom(ip, function(room) {
-    console.log("sent to room " + room);
+  rooms.doesRoomExist(ip, function(exists) {
+    if (exists) {
+      rooms.getRoom(ip, function(room) {
+        res.redirect(room);
+      });
+    } else {
+      res.sendFile("public/index.html", {"root": __dirname});
+    }
+  });
+});
+
+// a user visited root
+app.post("/", function(req, res) {
+  rooms.createRoom(req.ip, req.body.privacy, function(room) {
     res.redirect(room);
   });
 });
+
 // a user visited something other than root
 // (probably a room)
 app.get("*", function(req, res) {
-  res.sendFile('public/index.html', {"root": __dirname});
+  var ip = req.ip;
+  var path = req.path.replace("/", "");
+  // check path of room and see whether room is privacy
+  rooms.roomPrivacy(path, function(privacy) {
+    // if privacy, only let user in if the ip related
+    // to him is the room's
+    if (privacy == "private") {
+      rooms.getRoom(ip, function(room) {
+        if (room == path) {
+          res.sendFile("public/chat.html", {"root": __dirname});
+        } else {
+          res.send("Sorry, but you're not allowed.");
+        }
+      });
+    // if it's public, doesn't matter
+    } else if (privacy == "public") {
+      res.sendFile("public/chat.html", {"root": __dirname});
+    } else {
+      // room is not defined yet
+      res.send("This room has not been created yet.");
+    }
+  });
 });
 
 // SOCKET
