@@ -67,6 +67,7 @@ ul {
     float: left; }
 
 aside {
+  margin-top: 1em;
   float: right;
   display: inline-block;
   width: 20%; }
