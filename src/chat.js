@@ -22,17 +22,29 @@ var Berri = React.createClass({
       ip: data.ip,
       messages: data.messages
     });
+    // force scrollbar to bottom
+    var objDiv = document.getElementById("conversation");
+    objDiv.scrollTop = objDiv.scrollHeight;
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
+    // force scrollbar to bottom
+    var objDiv = document.getElementById("conversation");
+    objDiv.scrollTop = objDiv.scrollHeight;
   },
   userJoined: function(user) {
     this.setState({users: this.state.users.concat([user])});
+    // force scrollbar to bottom
+    var objDiv = document.getElementById("conversation");
+    objDiv.scrollTop = objDiv.scrollHeight;
   },
   userQuit: function(user) {
     var newUsers = this.state.users.slice();
     newUsers.splice(newUsers.indexOf(user));
     this.setState({users:newUsers});
+    // force scrollbar to bottom
+    var objDiv = document.getElementById("conversation");
+    objDiv.scrollTop = objDiv.scrollHeight;
   },
   render: function() {
     return (
@@ -60,7 +72,7 @@ var Conversation = React.createClass({
     var renderMessage = function(message) {
       return <Message author={message.author} text={message.text} />
     };
-    return (<ul>{this.props.messages.map(renderMessage)}</ul>);
+    return (<ul id="conversation">{this.props.messages.map(renderMessage)}</ul>);
   }
 });
 
@@ -86,7 +98,7 @@ var MessageInput = React.createClass({
     }
   },
   render: function() {
-    return (
+        return (
         <textarea placeholder="Write message..." value={this.state.text}
                   onChange={this.messageUpdated} onKeyPress={this.handleEnter}
                   className="animated"
