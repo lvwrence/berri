@@ -36,7 +36,7 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   render: function() {
     return (
-      React.DOM.div(null, 
+      React.DOM.div({id: "chat"}, 
         UserList({users: this.state.users}), 
         Conversation({messages: this.state.messages}), 
         MessageInput({user: this.state.user})
@@ -50,7 +50,7 @@ var UserList = React.createClass({displayName: 'UserList',
     var renderUser = function(user) {
       return React.DOM.li(null, user)
     }
-    return React.DOM.ul(null, this.props.users.map(renderUser));
+    return React.DOM.aside(null, React.DOM.ul(null, this.props.users.map(renderUser)));
   }
 });
 

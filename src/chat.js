@@ -36,7 +36,7 @@ var Berri = React.createClass({
   },
   render: function() {
     return (
-      <div>
+      <div id="chat">
         <UserList users={this.state.users} />
         <Conversation messages={this.state.messages} />
         <MessageInput user={this.state.user} />
@@ -50,7 +50,7 @@ var UserList = React.createClass({
     var renderUser = function(user) {
       return <li>{user}</li>
     }
-    return <ul>{this.props.users.map(renderUser)}</ul>;
+    return <aside><ul>{this.props.users.map(renderUser)}</ul></aside>;
   }
 });
 

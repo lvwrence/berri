@@ -10,6 +10,8 @@
   transition: height 0.2s;
 }
 
+
+
 textarea {
   position: fixed;
   width: 95%;
@@ -23,4 +25,25 @@ textarea {
   -webkit-border-radius: 0.2em;
   -moz-border-radius: 0.2em;
   border-radius: 0.2em;
+  resize: none;
+}
+
+ul {
+    float: left;
+    display: inline-block;
+    overflow: auto;
+    list-style-type: none;
+    width: 80%;
+    height: 33em;
+    li {
+        width: 100%;
+        word-wrap: break-word;
+        float: left;
+    }
+}
+
+aside {
+    float: right;
+    display: inline-block;
+    width: 20%;
 }
