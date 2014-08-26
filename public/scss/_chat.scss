@@ -2,6 +2,12 @@
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;
+  font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
 .animated {
@@ -10,8 +16,34 @@
   transition: height 0.2s;
 }
 
+#chat {
+    position: absolute;
+    width: 100%;
+    top: 1em;
+    left: 0em;
+    right: 0em;
+    bottom: 5em;
+    overflow-y: scroll;
+}
+ul {
+    float: left;
+    display: inline-block;
+    overflow: auto;
+    width: 85%;
+    list-style-type: none;
+    li {
+        width: 100%;
+        word-wrap: break-word;
+        float: left;
+    }
+}
 
-
+aside {
+    position: fixed;
+    text-align: right;
+    right: 1em;
+    width: 10em;
+}
 textarea {
   position: fixed;
   width: 95%;
@@ -28,23 +60,4 @@ textarea {
   resize: none;
 }
 
-ul {
-    float: left;
-    display: inline-block;
-    overflow: auto;
-    list-style-type: none;
-    width: 80%;
-    height: 33em;
-    li {
-        width: 100%;
-        word-wrap: break-word;
-        float: left;
-    }
-}
 
-aside {
-    margin-top: 1em;
-    float: right;
-    display: inline-block;
-    width: 20%;
-}

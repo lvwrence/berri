@@ -22,29 +22,21 @@ var Berri = React.createClass({displayName: 'Berri',
       ip: data.ip,
       messages: data.messages
     });
-    // force scrollbar to bottom
-    var objDiv = document.getElementById("conversation");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    scrollChatToBottom();
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
-    // force scrollbar to bottom
-    var objDiv = document.getElementById("conversation");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    scrollChatToBottom();
   },
   userJoined: function(user) {
     this.setState({users: this.state.users.concat([user])});
-    // force scrollbar to bottom
-    var objDiv = document.getElementById("conversation");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    scrollChatToBottom();
   },
   userQuit: function(user) {
     var newUsers = this.state.users.slice();
     newUsers.splice(newUsers.indexOf(user));
     this.setState({users:newUsers});
-    // force scrollbar to bottom
-    var objDiv = document.getElementById("conversation");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    scrollChatToBottom();
   },
   render: function() {
     return (
@@ -109,6 +101,11 @@ var MessageInput = React.createClass({displayName: 'MessageInput',
     );
   }
 });
+
+function scrollChatToBottom() {
+  var objDiv = document.getElementById("chat");
+  objDiv.scrollTop = objDiv.scrollHeight;
+}
 
 var socket = io.connect(window.location.hostname);
 React.renderComponent(Berri(null), document.body);
