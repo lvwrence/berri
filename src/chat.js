@@ -3,7 +3,13 @@
 // main component
 var Berri = React.createClass({
   getInitialState: function() {
-    return {user: null, users: [], ip: null, messages: []};
+    return {
+      gettingUsername: true,
+      username: null,
+      users: [],
+      ip: null,
+      messages: []
+    };
   },
   componentDidMount: function() {
     // initialization
@@ -17,7 +23,7 @@ var Berri = React.createClass({
   },
   initialize: function(data) {
     this.setState({
-      user: data.username,
+      username: data.username,
       users: data.users.concat([data.username]),
       ip: data.ip,
       messages: data.messages
@@ -87,7 +93,7 @@ var MessageInput = React.createClass({
   handleEnter: function(e) {
     if (e.charCode == 13 && !e.shiftKey) {
       e.preventDefault();
-      var message = { author: this.props.user, text: this.state.text };
+      var message = { author: this.props.username, text: this.state.text };
       socket.emit("message", message);
       this.setState({text: ""});
     }
