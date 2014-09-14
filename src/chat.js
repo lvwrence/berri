@@ -31,6 +31,7 @@ var Berri = React.createClass({
   },
   usernameWasSet: function(username) {
     this.setState({username: username, gettingUsername: false});
+    document.getElementById("message-input").focus();
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
@@ -63,6 +64,9 @@ var Berri = React.createClass({
 });
 
 var UsernameModal = React.createClass({
+  componentDidMount: function() {
+    document.getElementById("username-input").focus();
+  },
   getInitialState: function() {
     return {tentativeUsername: ''}
   },
@@ -91,12 +95,15 @@ var UsernameModal = React.createClass({
               
               <div className="modal-body">
                 <h4>Enter your username</h4>
-                <input type="text" onChange={this.handleTyping}
-                       onKeyPress={this.handleSubmit} />
+                <input type="text" id="username-input"
+                       className="form-control"
+                       onChange={this.handleTyping}
+                       onKeyPress={this.handleSubmit}
+                       />
               </div>
 
               <div className="modal-footer">
-                <a onClick={this.submitUsername} href="#" className="btn btn-primary btn-wide">Enter room</a>
+                <a onClick={this.submitUsername} className="btn btn-primary btn-wide">Enter room</a>
               </div>
             </div>
           </div>
@@ -153,7 +160,8 @@ var MessageInput = React.createClass({
   },
   render: function() {
         return (
-        <textarea placeholder="Write message..." value={this.state.text}
+        <textarea id="message-input"
+                  placeholder="Write message..." value={this.state.text}
                   onChange={this.messageUpdated} onKeyPress={this.handleEnter}
                   className="animated"
         />

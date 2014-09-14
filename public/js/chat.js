@@ -31,6 +31,7 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   usernameWasSet: function(username) {
     this.setState({username: username, gettingUsername: false});
+    document.getElementById("message-input").focus();
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
@@ -63,6 +64,9 @@ var Berri = React.createClass({displayName: 'Berri',
 });
 
 var UsernameModal = React.createClass({displayName: 'UsernameModal',
+  componentDidMount: function() {
+    document.getElementById("username-input").focus();
+  },
   getInitialState: function() {
     return {tentativeUsername: ''}
   },
@@ -91,12 +95,15 @@ var UsernameModal = React.createClass({displayName: 'UsernameModal',
               
               React.DOM.div({className: "modal-body"}, 
                 React.DOM.h4(null, "Enter your username"), 
-                React.DOM.input({type: "text", onChange: this.handleTyping, 
-                       onKeyPress: this.handleSubmit})
+                React.DOM.input({type: "text", id: "username-input", 
+                       className: "form-control", 
+                       onChange: this.handleTyping, 
+                       onKeyPress: this.handleSubmit}
+                       )
               ), 
 
               React.DOM.div({className: "modal-footer"}, 
-                React.DOM.a({onClick: this.submitUsername, href: "#", className: "btn btn-primary btn-wide"}, "Enter room")
+                React.DOM.a({onClick: this.submitUsername, className: "btn btn-primary btn-wide"}, "Enter room")
               )
             )
           )
@@ -153,7 +160,8 @@ var MessageInput = React.createClass({displayName: 'MessageInput',
   },
   render: function() {
         return (
-        React.DOM.textarea({placeholder: "Write message...", value: this.state.text, 
+        React.DOM.textarea({id: "message-input", 
+                  placeholder: "Write message...", value: this.state.text, 
                   onChange: this.messageUpdated, onKeyPress: this.handleEnter, 
                   className: "animated"}
         )
