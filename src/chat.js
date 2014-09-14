@@ -23,6 +23,7 @@ var Berri = React.createClass({
   },
   initialize: function(data) {
     this.setState({
+      username: null,
       users: data.users,
       ip: data.ip,
       messages: data.messages
@@ -38,7 +39,11 @@ var Berri = React.createClass({
     scrollChatToBottom();
   },
   userJoined: function(user) {
-    this.setState({users: this.state.users.concat([user])});
+    // since server emits a join when this user joins,
+    // we have to ignore for that case
+    if (this.state.username != user) {
+      this.setState({users: this.state.users.concat([user])});
+    }
     scrollChatToBottom();
   },
   userQuit: function(user) {
@@ -54,7 +59,7 @@ var Berri = React.createClass({
                        usernameWasSet={this.usernameWasSet}
         />
         <div id="chat">
-          <UserList users={this.state.users} />
+          <UserList username={this.state.username} users={this.state.users} />
           <Conversation messages={this.state.messages} />
           <MessageInput username={this.state.username} />
         </div>
@@ -118,9 +123,14 @@ var UsernameModal = React.createClass({
 var UserList = React.createClass({
   render: function() {
     var renderUser = function(user) {
-      return <li>{user}</li>
+      return (<li>{user}</li>);
     }
-    return <aside><ul>{this.props.users.map(renderUser)}</ul></aside>;
+    return (<aside>
+      <ul>
+        {this.props.username ? <li id="user">{this.props.username}</li> : null}
+        {this.props.users.map(renderUser)}
+      </ul>
+    </aside>);
   }
 });
 

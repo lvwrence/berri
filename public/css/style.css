@@ -71,6 +71,10 @@ ul {
     width: 100%;
     word-wrap: break-word;
     float: left; }
+  ul li#user {
+    color: #2ECC71;
+    font-weight: bold;
+    margin-bottom: 15px; }
 
 aside {
   position: fixed;

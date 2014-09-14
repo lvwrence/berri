@@ -23,6 +23,7 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   initialize: function(data) {
     this.setState({
+      username: null,
       users: data.users,
       ip: data.ip,
       messages: data.messages
@@ -38,7 +39,11 @@ var Berri = React.createClass({displayName: 'Berri',
     scrollChatToBottom();
   },
   userJoined: function(user) {
-    this.setState({users: this.state.users.concat([user])});
+    // since server emits a join when this user joins,
+    // we have to ignore for that case
+    if (this.state.username != user) {
+      this.setState({users: this.state.users.concat([user])});
+    }
     scrollChatToBottom();
   },
   userQuit: function(user) {
@@ -54,7 +59,7 @@ var Berri = React.createClass({displayName: 'Berri',
                        usernameWasSet: this.usernameWasSet}
         ), 
         React.DOM.div({id: "chat"}, 
-          UserList({users: this.state.users}), 
+          UserList({username: this.state.username, users: this.state.users}), 
           Conversation({messages: this.state.messages}), 
           MessageInput({username: this.state.username})
         )
@@ -118,9 +123,14 @@ var UsernameModal = React.createClass({displayName: 'UsernameModal',
 var UserList = React.createClass({displayName: 'UserList',
   render: function() {
     var renderUser = function(user) {
-      return React.DOM.li(null, user)
+      return (React.DOM.li(null, user));
     }
-    return React.DOM.aside(null, React.DOM.ul(null, this.props.users.map(renderUser)));
+    return (React.DOM.aside(null, 
+      React.DOM.ul(null, 
+        this.props.username ? React.DOM.li({id: "user"}, this.props.username) : null, 
+        this.props.users.map(renderUser)
+      )
+    ));
   }
 });
 
