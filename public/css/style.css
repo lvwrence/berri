@@ -83,6 +83,7 @@ textarea {
   -webkit-border-radius: 0.2em;
   -moz-border-radius: 0.2em;
   border-radius: 0.2em;
+  outline: none;
   resize: none; }
 
 /*# sourceMappingURL=style.css.map */
