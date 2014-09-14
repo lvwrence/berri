@@ -25,6 +25,14 @@ html, body {
     bottom: 5em;
     overflow-y: scroll;
 }
+
+#usernameModal {
+  position: absolute;
+  width: 50%;
+  margin: 0 auto;
+  z-index: 1;
+}
+
 ul {
     float: left;
     display: inline-block;

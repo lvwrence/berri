@@ -3,7 +3,13 @@
 // main component
 var Berri = React.createClass({displayName: 'Berri',
   getInitialState: function() {
-    return {user: null, users: [], ip: null, messages: []};
+    return {
+      gettingUsername: true,
+      username: null,
+      users: [],
+      ip: null,
+      messages: []
+    };
   },
   componentDidMount: function() {
     // initialization
@@ -17,7 +23,7 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   initialize: function(data) {
     this.setState({
-      user: data.username,
+      username: data.username,
       users: data.users.concat([data.username]),
       ip: data.ip,
       messages: data.messages
@@ -40,12 +46,45 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   render: function() {
     return (
-      React.DOM.div({id: "chat"}, 
-        UserList({users: this.state.users}), 
-        Conversation({messages: this.state.messages}), 
-        MessageInput({user: this.state.user})
+      React.DOM.div(null, 
+        UsernameModal({active: this.state.gettingUsername}), 
+        React.DOM.div({id: "chat"}, 
+          UserList({users: this.state.users}), 
+          Conversation({messages: this.state.messages}), 
+          MessageInput({user: this.state.user})
+        )
       )
     );
+  }
+});
+
+var UsernameModal = React.createClass({displayName: 'UsernameModal',
+  getInitialState: function() {
+    return {tentativeUsername: ''}
+  },
+  handleTyping: function(e) {
+    this.setState({tentativeUsername: e.target.value});
+  },
+  handleSubmit: function(e) {
+    if (e.charCode == 13) {
+      e.preventDefault();
+      socket.emit("message", message);
+      this.setState({text: ""});
+    }
+  },
+  render: function() {
+    if (this.props.active) {
+      return (
+        React.DOM.div({id: "usernameModal"}, 
+          React.DOM.p(null, "Choose your username"), 
+          React.DOM.input({type: "text", 
+            onChange: this.handleTyping, 
+            onKeyPress: this.handleSubmit})
+        )
+      );
+    } else {
+      return null;
+    }
   }
 });
 
@@ -87,7 +126,7 @@ var MessageInput = React.createClass({displayName: 'MessageInput',
   handleEnter: function(e) {
     if (e.charCode == 13 && !e.shiftKey) {
       e.preventDefault();
-      var message = { author: this.props.user, text: this.state.text };
+      var message = { author: this.props.username, text: this.state.text };
       socket.emit("message", message);
       this.setState({text: ""});
     }
