@@ -26,11 +26,16 @@ html, body {
     overflow-y: scroll;
 }
 
-#usernameModal {
-  position: absolute;
-  width: 50%;
+.modal {
+  display: block;
+  width: 100%;
+
   margin: 0 auto;
   z-index: 1;
+
+  h4 {
+      margin-top: 0px;
+  }
 }
 
 ul {

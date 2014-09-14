@@ -23,12 +23,14 @@ var Berri = React.createClass({displayName: 'Berri',
   },
   initialize: function(data) {
     this.setState({
-      username: data.username,
-      users: data.users.concat([data.username]),
+      users: data.users,
       ip: data.ip,
       messages: data.messages
     });
     scrollChatToBottom();
+  },
+  usernameWasSet: function(username) {
+    this.setState({username: username, gettingUsername: false});
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
@@ -47,11 +49,13 @@ var Berri = React.createClass({displayName: 'Berri',
   render: function() {
     return (
       React.DOM.div(null, 
-        UsernameModal({active: this.state.gettingUsername}), 
+        UsernameModal({active: this.state.gettingUsername, 
+                       usernameWasSet: this.usernameWasSet}
+        ), 
         React.DOM.div({id: "chat"}, 
           UserList({users: this.state.users}), 
           Conversation({messages: this.state.messages}), 
-          MessageInput({user: this.state.user})
+          MessageInput({username: this.state.username})
         )
       )
     );
@@ -68,20 +72,36 @@ var UsernameModal = React.createClass({displayName: 'UsernameModal',
   handleSubmit: function(e) {
     if (e.charCode == 13) {
       e.preventDefault();
-      socket.emit("message", message);
+      this.submitUsername();
       this.setState({text: ""});
     }
+  },
+  submitUsername: function() {
+    console.log("emitting username...");
+    var username = this.state.tentativeUsername;
+    socket.emit("username", username);
+    this.props.usernameWasSet(username);
   },
   render: function() {
     if (this.props.active) {
       return (
-        React.DOM.div({id: "usernameModal"}, 
-          React.DOM.p(null, "Choose your username"), 
-          React.DOM.input({type: "text", 
-            onChange: this.handleTyping, 
-            onKeyPress: this.handleSubmit})
+        React.DOM.div({className: "modal"}, 
+          React.DOM.div({className: "modal-dialog"}, 
+            React.DOM.div({className: "modal-content"}, 
+              
+              React.DOM.div({className: "modal-body"}, 
+                React.DOM.h4(null, "Enter your username"), 
+                React.DOM.input({type: "text", onChange: this.handleTyping, 
+                       onKeyPress: this.handleSubmit})
+              ), 
+
+              React.DOM.div({className: "modal-footer"}, 
+                React.DOM.a({onClick: this.submitUsername, href: "#", className: "btn btn-primary btn-wide"}, "Enter room")
+              )
+            )
+          )
         )
-      );
+        );
     } else {
       return null;
     }

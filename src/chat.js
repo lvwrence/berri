@@ -23,12 +23,14 @@ var Berri = React.createClass({
   },
   initialize: function(data) {
     this.setState({
-      username: data.username,
-      users: data.users.concat([data.username]),
+      users: data.users,
       ip: data.ip,
       messages: data.messages
     });
     scrollChatToBottom();
+  },
+  usernameWasSet: function(username) {
+    this.setState({username: username, gettingUsername: false});
   },
   getMessage: function(message) {
     this.setState({messages: this.state.messages.concat([message])});
@@ -47,11 +49,13 @@ var Berri = React.createClass({
   render: function() {
     return (
       <div>
-        <UsernameModal active={this.state.gettingUsername} />
+        <UsernameModal active={this.state.gettingUsername}
+                       usernameWasSet={this.usernameWasSet}
+        />
         <div id="chat">
           <UserList users={this.state.users} />
           <Conversation messages={this.state.messages} />
-          <MessageInput user={this.state.user} />
+          <MessageInput username={this.state.username} />
         </div>
       </div>
     );
@@ -68,20 +72,36 @@ var UsernameModal = React.createClass({
   handleSubmit: function(e) {
     if (e.charCode == 13) {
       e.preventDefault();
-      socket.emit("message", message);
+      this.submitUsername();
       this.setState({text: ""});
     }
+  },
+  submitUsername: function() {
+    console.log("emitting username...");
+    var username = this.state.tentativeUsername;
+    socket.emit("username", username);
+    this.props.usernameWasSet(username);
   },
   render: function() {
     if (this.props.active) {
       return (
-        <div id="usernameModal">
-          <p>Choose your username</p>
-          <input type="text"
-            onChange={this.handleTyping}
-            onKeyPress={this.handleSubmit} />
+        <div className="modal">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              
+              <div className="modal-body">
+                <h4>Enter your username</h4>
+                <input type="text" onChange={this.handleTyping}
+                       onKeyPress={this.handleSubmit} />
+              </div>
+
+              <div className="modal-footer">
+                <a onClick={this.submitUsername} href="#" className="btn btn-primary btn-wide">Enter room</a>
+              </div>
+            </div>
+          </div>
         </div>
-      );
+        );
     } else {
       return null;
     }

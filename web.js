@@ -40,7 +40,7 @@ app.get("/", function(req, res) {
   });
 });
 
-// a user visited root
+// a user asked to create a room
 app.post("/", function(req, res) {
   rooms.createRoom(req.ip, req.body.privacy, function(room) {
     res.redirect(room);
@@ -79,32 +79,36 @@ app.get("*", function(req, res) {
 io.on("connection", function(socket) {
   // this is the room name (pathname)
   var room = socket.handshake.headers.referer.split("/").slice(-1)[0];
-  // get a random animal username
-  var username = animals.getAnimalName();
+  var username = null;
   console.log("a user with ip " + socket.handshake.address.address + " connected to room " + room);
   socket.join(room);
-  // emit a join
-  io.to(room).emit("join", username);
 
   // initialize the user with a random animal username and possibly other stuff later (get existing chat?)
   console.log("initializing user...");
   rooms.getData(room, function(users, messages) {
-    var user = username;
+    // var user = username;
     var users = users;
     var ip = socket.handshake.address.address;
     var messageHistory = messages.map(JSON.parse);
     socket.emit("initialize", {
-      username: username,
+      // username: username,
       users: users,
       ip: ip,
       messages: messageHistory
     });
+  });
+
+  // on user initializing their username
+  socket.on("username", function(newUsername) {
+    username = newUsername;
+    // emit a join
+    io.to(room).emit("join", username);
     // add user to room in redis (have to do it here
     // since we manually put username in client so
     // it won't appear twice)
     rooms.addUser(room, username);
   });
-
+  
   // on receiving a message from the user
   socket.on("message", function(msg) {
     io.to(room).emit("message", msg);
@@ -114,7 +118,11 @@ io.on("connection", function(socket) {
 
   // on user disconnect
   socket.on("disconnect", function() {
-    io.to(room).emit("quit", username);
-    rooms.removeUser(room, username);
+    // only consider it a disconnect if user has a username.
+    // otherwise pretend they never came
+    if (username) {
+      io.to(room).emit("quit", username);
+      rooms.removeUser(room, username);
+    }
   });
 });
