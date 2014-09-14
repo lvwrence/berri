@@ -46,12 +46,45 @@ var Berri = React.createClass({
   },
   render: function() {
     return (
-      <div id="chat">
-        <UserList users={this.state.users} />
-        <Conversation messages={this.state.messages} />
-        <MessageInput user={this.state.user} />
+      <div>
+        <UsernameModal active={this.state.gettingUsername} />
+        <div id="chat">
+          <UserList users={this.state.users} />
+          <Conversation messages={this.state.messages} />
+          <MessageInput user={this.state.user} />
+        </div>
       </div>
     );
+  }
+});
+
+var UsernameModal = React.createClass({
+  getInitialState: function() {
+    return {tentativeUsername: ''}
+  },
+  handleTyping: function(e) {
+    this.setState({tentativeUsername: e.target.value});
+  },
+  handleSubmit: function(e) {
+    if (e.charCode == 13) {
+      e.preventDefault();
+      socket.emit("message", message);
+      this.setState({text: ""});
+    }
+  },
+  render: function() {
+    if (this.props.active) {
+      return (
+        <div id="usernameModal">
+          <p>Choose your username</p>
+          <input type="text"
+            onChange={this.handleTyping}
+            onKeyPress={this.handleSubmit} />
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 });
 
