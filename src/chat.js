@@ -146,10 +146,8 @@ var Conversation = React.createClass({
 
 var Message = React.createClass({
   render: function() {
-    var parsedMessage = this.props.author + ": " + URI.withinString(this.props.text, function(url) {
-      return '<a href="' + url + '">' + url + "</a>";
-    });
-    return (<li dangerouslySetInnerHTML={{__html: parsedMessage}} />);
+    var message = this.props.author + ": " + this.props.text;
+    return (<li>{message}</li>);
   }
 });
 
