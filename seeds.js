@@ -3,48 +3,15 @@
 // DEPENDENCIES
 var redis = require("redis"),
     client = redis.createClient();
+var fs = require("fs");
 
 console.log("starting up redis client...");
 
-// loads list from json file
-var adjectives = [
-  // A
-  "able",
-  "acute",
-  "added",
-  "agape",
-  "aged",
-  "alpha",
-  "ample",
-  "awful",
-  "azure"
-];
-var nouns = [
-  // A
-  "abbey",
-  "abode",
-  "abbot",
-  "abyss",
-  "acorn",
-  "actor",
-  "adage",
-  "adieu",
-  "agent",
-  "aisle",
-  "alert",
-  "alley",
-  "altar",
-  "anvil",
-  "apple",
-  "apron",
-  "army",
-  "array",
-  "arson",
-  "atlas",
-  "attic",
-  "axis",
-  "axon",
-];
+var content = fs.readFileSync("berri-uncommon");
+content = content.toString();
+
+var words = content.replace(/\n/g, " ").split(" ");
+words.pop();
 
 var takenRoomNames = {};
 client.smembers("rooms:available", function(err, reply) {
@@ -58,18 +25,15 @@ client.smembers("rooms:available", function(err, reply) {
       takenRoomNames[reply2[j]] = true;
     }
 
-    // now go through every adj-noun combination and, if
-    // not in takenRoomNames, add to rooms:available
-    for (var k = 0; k < adjectives.length; k++) {
-      for (var l = 0; l < nouns.length; l++) {
-        var roomName = adjectives[k] + "-" + nouns[l];
-        if (roomName in takenRoomNames) {
-          // don't do anything
-        } else {
-          client.sadd("rooms:available", roomName, function(err, reply3) {
-            console.log("added");
-          });
-        }
+    // if word not in takenRoomNames, add to rooms:available
+    for (var k = 0; k < words.length; k++) {
+      var roomName = words[k];
+      if (roomName in takenRoomNames) {
+        // don't do anything
+      } else {
+        client.sadd("rooms:available", roomName, function(err, reply3) {
+          console.log("added");
+        });
       }
     }
   });
